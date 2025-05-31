@@ -1,0 +1,66 @@
+排课系统/
+│
+├── app.py                    # 主启动程序（只负责加载页面和路由）
+├── layout/
+│   ├── sidebar.py            # 左侧导航栏
+│   ├── page_apply.py         # 课程申请页面
+│   ├── page_schedule.py      # 排课页面 + 调度按钮
+│   └── page_report.py        # 排课报表页面
+│
+├── callbacks/
+│   └── schedule_callback.py  # 调度逻辑和按钮响应（绑定函数）
+│
+├── logic/
+│   └── scheduler.py          # 核心排课算法（合并、拆分）
+│
+├── database/
+│   └── db_utils.py           # SQLite 读取写入工具函数
+│
+└── scheduler.db              # 数据库文件（与原 SQLite 保持一致）
+
+
+# Dash 排课系统项目关键背景记录（保留用于后续继续开发）
+
+# ✅ 项目模块结构（已拆分）
+# scheduler_app/
+# ├── app.py
+# ├── layout/
+# │   ├── sidebar.py
+# │   ├── page_apply.py
+# │   ├── page_schedule.py
+# │   ├── page_report.py
+# │   └── page_courses.py
+# ├── callbacks/
+# │   └── schedule_callback.py
+# ├── logic/
+# │   └── scheduler.py
+# ├── database/
+# │   └── db_utils.py
+# └── scheduler.db
+
+# ✅ 数据表结构（scheduler.db）
+# courses(course_code TEXT PRIMARY KEY, duration INT, max_students INT)
+# trainers(name TEXT, course_code TEXT)
+# classrooms(room TEXT PRIMARY KEY, capacity INT)
+# schedule(day TEXT, period TEXT, course TEXT, company TEXT, students INT, group_id TEXT, trainer TEXT, room TEXT)
+# unassigned_requests(id INT PRIMARY KEY AUTOINCREMENT, course TEXT, company TEXT, students INT, group_id TEXT, reason TEXT)
+
+# ✅ 排课逻辑支持：
+# - 课程可多次安排（周期 2 周，AM/PM 时段）
+# - 培训师课程授权
+# - 教室容量限制（WAH/HW 限制最大 25 人）
+# - 合并公司申请（相同课程+培训师）
+# - 若无法合并则尝试拆分安排（部分加入已排课，剩余顺延）
+
+# ✅ 页面功能已实现：
+# - 课程申请页面（page_apply，课程数据与 page_courses 模块共享，避免重复）
+# - 排课管理页面（page_schedule，含立即排课按钮）
+# - 调度逻辑绑定并显示最新排课表（schedule_callback + scheduler）
+# - 报表页面（page_report，使用 Dash DataTable 显示排课详情，可拓展 Plotly 图表做人数趋势与资源利用率分析）
+# - 课程配置页面（page_courses，支持新增/编辑/删除课程）
+
+# ✅ 后续可扩展功能：
+# - 假期排除设置
+# - 教师/教室管理页面
+# - 邮件通知功能
+# - 拖拽式日历视图（Dash dcc.Calendar/Vis.js）
